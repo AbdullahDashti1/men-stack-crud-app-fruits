@@ -7,6 +7,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 
+const path = require('path');
 
 const PORT = 3000;
 const app = express();
@@ -23,6 +24,11 @@ const Fruit = require('./models/fruit.js')
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
+
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 
@@ -74,14 +80,14 @@ app.put('/fruits/:fruitId', async (req, res) => {
     }
 
     const fruitId = req.params.fruitId;
-    
+    console.log(fruitId)
     await Fruit.findByIdAndUpdate(fruitId, req.body);
 
-    res.redirect('/fruits/fruitId');
+    res.redirect(`/fruits/${fruitId}`);
 })
 
 app.delete('/fruits/:fruitId', async (req, res) => {
-    const fruitId = req.params.fruitId; 
+    const fruitId = req.params.fruitId;
     await Fruit.findByIdAndDelete(fruitId);
     res.redirect('/fruits');
 });
