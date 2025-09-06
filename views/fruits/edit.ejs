@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <a href="/fruits/">Back to Fruits</a>
+    <a href="/fruits/<%=fruit._id%>">Back to <%= fruit.name %></a>
 
     <h1>Edit <%= fruit.name %></h1>
     <form action="/fruits/<%=fruit._id%>?_method=PUT" method="POST">
@@ -17,6 +17,7 @@
 
         <label for="isReadyToEat">Ready to Eat?</label>
         <input type="checkbox" name="isReadyToEat" id="isReadyToEat" />
+
         <button type="submit">Update Fruit</button>
     </form>
 </body>

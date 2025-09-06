@@ -49,7 +49,6 @@ app.get("/fruits/:fruitId", async (req, res) => {
 
 app.get("/fruits/:fruitId/edit", async (req, res) => {
     const foundFruit = await Fruit.findById(req.params.fruitId);
-
     res.render('fruits/edit.ejs', {
         fruit: foundFruit,
     });
@@ -65,6 +64,21 @@ app.post('/fruits', async (req, res) => {
     await Fruit.create(req.body);
     res.redirect('/fruits')
 });
+
+app.put('/fruits/:fruitId', async (req, res) => {
+    console.log(req.body);
+    if (req.body.isReadyToEat === 'on') {
+        req.body.isReadyToEat = true;
+    } else {
+        req.body.isReadyToEat = false;
+    }
+
+    const fruitId = req.params.fruitId;
+    
+    await Fruit.findByIdAndUpdate(fruitId, req.body);
+
+    res.redirect('/fruits/fruitId');
+})
 
 app.delete('/fruits/:fruitId', async (req, res) => {
     const fruitId = req.params.fruitId; 
