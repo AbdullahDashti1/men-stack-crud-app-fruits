@@ -5,6 +5,8 @@ dotenv.config();
 
 const express = require('express');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+
 
 const PORT = 3000;
 const app = express();
@@ -18,6 +20,7 @@ mongoose.connection.on('connected', () => {
 const Fruit = require('./models/fruit.js')
 
 // Middleware
+app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
@@ -44,6 +47,14 @@ app.get("/fruits/:fruitId", async (req, res) => {
     });
 });
 
+app.get("/fruits/:fruitId/edit", async (req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+
+    res.render('fruits/edit.ejs', {
+        fruit: foundFruit,
+    });
+});
+
 app.post('/fruits', async (req, res) => {
     console.log(req.body);
     if (req.body.isReadyToEat === 'on') {
@@ -53,7 +64,13 @@ app.post('/fruits', async (req, res) => {
     }
     await Fruit.create(req.body);
     res.redirect('/fruits')
-})
+});
+
+app.delete('/fruits/:fruitId', async (req, res) => {
+    const fruitId = req.params.fruitId; 
+    await Fruit.findByIdAndDelete(fruitId);
+    res.redirect('/fruits');
+});
 
 app.listen(PORT, () => {
     console.log('Listening on port 3000');
